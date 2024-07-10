@@ -1,0 +1,29 @@
+export const messages = {
+    category: {
+        success: "Success",
+        successAdd: " Success Add Category ",
+        successUpdate: " Success Update Category ",
+        successDelete: " Success Delete Category ",
+        isExist: "Category Is Exist",
+        notFound: "Category Not Found",
+        conflictCategory: "Conflict Category Try Other Name"
+    },
+    subCategory: {
+        success: "Success",
+        successAdd: " Success Add Sub Category ",
+        successUpdate: " Success Update Sub Category ",
+        successDelete: " Success Delete Sub Category ",
+        isExist: "Sub Category Is Exist",
+        notFound: "sub Category Not Found",
+        conflictSubCategory: "Conflict Sub Category Try Other Name"
+    },
+    brand: {
+        success: "Success",
+        successAdd: " Success Add brand ",
+        successUpdate: " Success Update brand ",
+        successDelete: " Success Delete brand ",
+        isExist: "brand Is Exist",
+        notFound: "brand Not Found",
+        conflictbrand: "Conflict brand Try Other Name"
+    },
+}
