@@ -1,5 +1,6 @@
 import slugify from "slugify";
 import CategoryModel from "../../../database/models/category.model.js";
+import UserModel from "../../../database/models/user.model.js";
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
 
@@ -8,6 +9,11 @@ import { messages } from "../../utils/messages.js";
 /* ==========  Add Category ==========  */
 
 const addCategory = async (req, res, next) => {
+    const admin = req.authUser
+
+    const adminExist = await UserModel.findById(admin._id)
+
+    if (!adminExist) return next(new AppError(messages.user.adminNotFound))
 
     const { name } = req.body;
     const slug = slugify(name)
@@ -19,7 +25,9 @@ const addCategory = async (req, res, next) => {
 
     let category = new CategoryModel({
         name,
-        slug
+        slug,
+        createdBy: admin._id
+
     });
     await category.save();
 

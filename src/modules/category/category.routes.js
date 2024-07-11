@@ -1,5 +1,8 @@
 import { Router } from "express";
+import auth from "../../middleware/auth.js";
 import catchError from "../../middleware/catchError.js";
+import verifyToken from "../../middleware/verifyToken.js";
+import { roles } from "../../utils/enum.js";
 import { addCategory, deleteCategory, getCategories, getCategory, updateCategory } from "./category.controller.js";
 
 const categoryRouter = Router();
@@ -7,7 +10,7 @@ const categoryRouter = Router();
 
 /* Add Category */
 
-categoryRouter.post('/', catchError(addCategory));
+categoryRouter.post('/', verifyToken, auth(roles.ADMIN), catchError(addCategory));
 
 /* Get Categories */
 

@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { roles, status } from "../../src/utils/enum.js";
 
 const userSchema = new Schema({
 
@@ -11,10 +12,17 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+
     password: {
         type: String,
         required: true
     },
+
+    confirmEmail: {
+        type: Boolean,
+        default: false
+    },
+
     isBlocked: {
         type: Boolean,
         default: false
@@ -24,6 +32,13 @@ const userSchema = new Schema({
         type: String,
         enum: Object.values(roles),
         default: roles.USER
+    },
+
+    status: {
+        type: String,
+        enum: Object.values(status),
+        default: status.OFFLINE
+
     }
 
 
