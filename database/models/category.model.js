@@ -30,6 +30,10 @@ const categorySchema = new Schema({
 }, { timestamps: true, versionKey: false })
 
 
+/* */
+
+categorySchema.post('init', (image) => image.image = `http://localhost:3000/uploads/categories/${image.image}`)
+
 
 const CategoryModel = model('Category', categorySchema)
 

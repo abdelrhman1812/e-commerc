@@ -3,7 +3,7 @@ import { addSubCategory, deleteSubCategory, getSubCategories, getSubCategory, up
 
 import { Router } from "express";
 
-const subCategoryRouter = Router();
+const subCategoryRouter = Router({ mergeParams: true });
 
 
 

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { uploadSingleFile } from "../../fileUpload/fileUpload.js";
 import { addBrand, deleteBrand, getBrand, getBrands, updateBrand } from "./brand.controller.js";
 
 const brandRouter = Router();
@@ -6,7 +7,7 @@ const brandRouter = Router();
 
 /* Add Brand */
 
-brandRouter.post('/', addBrand)
+brandRouter.post('/', uploadSingleFile('logo', 'brands'), addBrand)
 
 
 /* Get Brands */
@@ -19,7 +20,7 @@ brandRouter.get('/:id', getBrand)
 
 /* Update Brand */
 
-brandRouter.put('/:id', updateBrand)
+brandRouter.put('/:id', uploadSingleFile('logo', 'brands'), updateBrand)
 
 /* Delete Brand */
 

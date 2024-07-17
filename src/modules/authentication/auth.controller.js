@@ -69,6 +69,7 @@ const signIn = async (req, res, next) => {
     if (!userExist) return next(new AppError(messages.email.isNotExist, 404));
 
     if (!userExist.confirmEmail) return next(new AppError(messages.email.verfiyEmail), 400)
+
     /* Check Password */
 
     const matchPassword = bcrypt.compareSync(password, userExist.password);

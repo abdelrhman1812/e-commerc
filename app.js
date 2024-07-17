@@ -9,6 +9,8 @@ const port = 3000
 
 /* Global */
 
+app.use('/uploads', express.static('uploads'))
+
 app.use(express.json())
 
 /* Connections */

@@ -1,11 +1,9 @@
+import fs from 'fs';
 import slugify from "slugify";
 import CategoryModel from "../../../database/models/category.model.js";
 import UserModel from "../../../database/models/user.model.js";
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
-
-
-
 /* ==========  Add Category ==========  */
 
 const addCategory = async (req, res, next) => {
@@ -26,8 +24,8 @@ const addCategory = async (req, res, next) => {
     let category = new CategoryModel({
         name,
         slug,
-        createdBy: admin._id
-
+        createdBy: admin._id,
+        image: req.file.filename
     });
     await category.save();
 
@@ -66,22 +64,30 @@ const getCategory = async (req, res, next) => {
 
 const updateCategory = async (req, res, next) => {
     const categoryId = req.params.id;
-    let { name, slug } = req.body;
 
     //  slug from name if slug is not exist
-    if (!slug) {
-        slug = slugify(name);
-    }
+    req.body.slug = slugify(req.body.name);
+
+    if (req.file) req.body.image = req.file.filename;
 
     // Check if category exists
     const category = await CategoryModel.findById(categoryId);
-
     if (!category) return next(new AppError(messages.category.notFound), 404);
 
-    // Find and check if name or slug conflicts with other categories
+
+    // Delete old image if it exists
+    if (category.image) {
+        const oldImagePath = category.image.split('/').splice(5).join('/');
+        const fullPath = `uploads/categories/${oldImagePath}`;
+        if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+        }
+    }
+
+    // Find and check if name or slug conflicts with other categories 
 
     const conflictCategory = await CategoryModel.findOne({
-        $or: [{ name }, { slug }],
+        $or: [{ name: req.body.name }, { slug: req.body.slug }],
         _id: { $ne: categoryId }
     });
 
@@ -90,12 +96,13 @@ const updateCategory = async (req, res, next) => {
     // Update the category
     const categoryUpdated = await CategoryModel.findByIdAndUpdate(
         categoryId,
-        { name, slug },
+        req.body,
         { new: true }
     );
 
     res.status(200).json({ message: messages.category.successUpdate, categoryUpdated, success: true });
 };
+
 
 
 /* ========== Delete Category ========== */

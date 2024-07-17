@@ -31,6 +31,10 @@ const brandSchema = new Schema({
 }, { timestamps: true, versionKey: false })
 
 
+/* */
+
+brandSchema.post('init', (logo) => logo.logo = `http://localhost:3000/uploads/brands/${logo.logo}`)
+
 
 const BrandModel = model('Brand', brandSchema)
 

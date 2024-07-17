@@ -1,8 +1,8 @@
+import fs from 'fs';
 import slugify from "slugify";
 import BrandModel from "../../../database/models/brand.model.js";
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
-
 
 
 /* ==========  Add Brand ==========  */
@@ -12,6 +12,9 @@ const addBrand = async (req, res, next) => {
     const { name } = req.body;
     const slug = slugify(name)
 
+    if (req.file) req.body.log = req.file.filename
+
+
     const brandIsExist = await BrandModel.findOne({
         $or: [{ name }, { slug }]
     });
@@ -19,7 +22,8 @@ const addBrand = async (req, res, next) => {
 
     let brand = new BrandModel({
         name,
-        slug
+        slug,
+        logo: req.body.log
     });
     await brand.save();
 
@@ -63,15 +67,25 @@ const updateBrand = async (req, res, next) => {
 
     //  slug from name if slug is not exist
 
-    if (!slug) {
-        slug = slugify(name);
-    }
+    req.body.slug = slugify(req.body.name)
+
+    if (req.file) req.body.logo = req.file.filename
 
     // Check if brand exists
 
     const brand = await BrandModel.findById(brandId);
 
     if (!brand) return next(new AppError(messages.brand.notFound), 404);
+    console.log(brand.logo.split('/').splice(5).join('/'))
+
+    // Delete old image if it exists
+    if (req.file && brand.logo) {
+        const oldImagePath = brand.logo.split('/').splice(5).join('/');
+        const fullPath = `uploads/brands/${oldImagePath}`;
+        if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+        }
+    }
 
     // Find and check if name or slug conflicts with other categories
 
@@ -85,7 +99,8 @@ const updateBrand = async (req, res, next) => {
     // Update the brand
     const brandUpdated = await BrandModel.findByIdAndUpdate(
         brandId,
-        { name, slug },
+        req.body,
+
         { new: true }
     );
 

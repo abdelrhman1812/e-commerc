@@ -38,7 +38,11 @@ const addSubCategory = async (req, res, next) => {
 
 const getSubCategories = async (req, res, next) => {
 
-    const subCategories = await SubCategoryModel.find()
+    let filter = {}
+    if (req.params.categoryId) filter.category = req.params.categoryId
+    console.log(req.params.categoryId)
+
+    const subCategories = await SubCategoryModel.find(filter)
 
     return res.status(200).json({ message: messages.subCategory.success, subCategories, success: true })
 

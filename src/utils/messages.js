@@ -55,5 +55,14 @@ export const messages = {
         notFound: "brand Not Found",
         conflictbrand: "Conflict brand Try Other Name"
     },
+    product: {
+        success: "Success",
+        successAdd: " Success Add product ",
+        successUpdate: " Success Update product ",
+        successDelete: " Success Delete product ",
+        isExist: "product Is Exist",
+        notFound: "product Not Found",
+        conflictproduct: "Conflict product Try Other Name"
+    },
 
 }
