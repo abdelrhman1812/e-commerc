@@ -32,7 +32,11 @@ const categorySchema = new Schema({
 
 /* */
 
-categorySchema.post('init', (image) => image.image = `http://localhost:3000/uploads/categories/${image.image}`)
+categorySchema.post('init', (doc) => {
+    if (doc.image) {
+        doc.image = `http://localhost:3000/uploads/categories/${doc.image}`;
+    }
+});
 
 
 const CategoryModel = model('Category', categorySchema)

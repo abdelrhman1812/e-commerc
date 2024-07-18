@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import CategoryModel from "../../../database/models/category.model.js";
 import SubCategoryModel from "../../../database/models/subCategory.model.js";
+import ApiFeatures from "../../utils/apiFeatures.js";
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
 
@@ -40,11 +41,17 @@ const getSubCategories = async (req, res, next) => {
 
     let filter = {}
     if (req.params.categoryId) filter.category = req.params.categoryId
-    console.log(req.params.categoryId)
+    let apiFeature = new ApiFeatures(SubCategoryModel.find(filter), req.query)
+        .filter()
+        .sort()
+        .fields()
+        .search()
+        .pagination();
 
-    const subCategories = await SubCategoryModel.find(filter)
+    let count = await apiFeature.countDocuments();
+    let subCategories = await apiFeature.mongooseQuery;
 
-    return res.status(200).json({ message: messages.subCategory.success, subCategories, success: true })
+    res.status(200).json({ message: messages.subCategory.success, count, subCategories, success: true });
 
 }
 

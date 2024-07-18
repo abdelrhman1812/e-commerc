@@ -6,7 +6,9 @@ export const messages = {
         login: "Success Login",
         mustLogin: "User Must Login",
         notAuthorized: " Not Authorized",
-        adminNotFound: "Admin Not Found"
+        adminNotFound: "Admin Not Found",
+        success: "Success",
+        successDelete: "Success Delete",
 
     },
 
@@ -14,7 +16,8 @@ export const messages = {
 
         isExist: " Email Is Exist",
         isNotExist: " Email Not Is Exist",
-        verfiyEmail: "Must be Verfiy Account"
+        verifyEmail: "Must be Verify Account",
+        conflictEmail: "Conflict Email"
     },
 
     password: {
@@ -23,8 +26,9 @@ export const messages = {
     },
 
     token: {
-        tokenIsReguird: "Token Is Requird",
+        tokenIsRequired: "Token Is Required",
         invalidToken: "Token Is Invalid",
+        tokenProvider: "Token Not Provider"
     },
     category: {
         success: "Success",

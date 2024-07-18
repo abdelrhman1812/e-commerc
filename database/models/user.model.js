@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { model, Schema } from "mongoose";
 import { roles, status } from "../../src/utils/enum.js";
 
@@ -39,11 +40,24 @@ const userSchema = new Schema({
         enum: Object.values(status),
         default: status.OFFLINE
 
-    }
+    },
+    passwordChangedAt: Date
 
 
 }, { timestamps: true, versionKey: false })
 
+/* ============= Hash Password ============= */
+
+userSchema.pre('save', function () {
+
+    this.password = bcrypt.hashSync(this.password, 10)
+
+}),
+
+    userSchema.pre('findOneAndUpdate', function () {
+        if (this._update.password) this._update.password = bcrypt.hashSync(this._update.password, 10)
+
+    })
 
 const UserModel = model('User', userSchema)
 

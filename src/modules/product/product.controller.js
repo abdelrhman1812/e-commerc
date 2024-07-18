@@ -1,9 +1,9 @@
 import slugify from "slugify";
 import ProductModel from "../../../database/models/product.model.js";
 import UserModel from "../../../database/models/user.model.js";
+import ApiFeatures from "../../utils/apiFeatures.js";
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
-import paginationFunction from "../../utils/pagination.js";
 
 /* =============== Add Product ===============  */
 
@@ -122,69 +122,26 @@ const getProduct = async (req, res, next) => {
 
 const getProducts = async (req, res, next) => {
 
-    const { page, size, sort, fields, search } = req.query;
+    let apiFeature = new ApiFeatures(ProductModel.find(), req.query)
+        .filter()
+        .sort()
+        .fields()
+        .search()
+        .pagination();
 
-    const { limit, skip } = paginationFunction({ page, size })
+    let count = await apiFeature.countDocuments();
+    let products = await apiFeature.mongooseQuery;
 
-    /* Filter */
-    let filterProduct = structuredClone(req.query)
-    /* Convert It to string to use string method */
+    res.status(200).json({ message: messages.product.success, count, products, success: true });
 
-    filterProduct = JSON.stringify(filterProduct)
+};
 
-    filterProduct = filterProduct.replace(/(gte|gt|lt|lte)/g, value => `$${value}`)
-
-    /* Convert It to object */
-
-    filterProduct = JSON.parse(filterProduct)
-    console.log(filterProduct)
-
-    const exculdedFields = ['page', 'sort', 'fields', 'search']
-    exculdedFields.forEach((field) => delete filterProduct[field])
-
-
-    let mongooseQuery = ProductModel.find(filterProduct)
-
-
-    /* Sort */
-
-    if (sort) {
-        console.log(req.query.sort)
-
-        let sortedBy = req.query.sort.split(',').join('')
-        mongooseQuery = mongooseQuery.sort(sortedBy)
-    }
-    /* Selecting specific fields */
-    if (fields) {
-        console.log(req.query.fields);
-        let selectedFields = req.query.fields.split(',').join(' ');
-        mongooseQuery = mongooseQuery.select(selectedFields);
-    }
-
-    /* Search */
-
-    // Search
-    if (search) {
-        mongooseQuery = mongooseQuery.find({
-            $or: [
-                { title: { $regex: req.query.search, $options: 'i' } },
-                { description: { $regex: req.query.search, $options: 'i' } }
-            ]
-        });
-    }
-
-
-
-
-    const countProduct = await mongooseQuery.clone().countDocuments();
-
-
-    let products = await mongooseQuery.exec()
-
-
-    res.status(200).json({ message: messages.product.success, count: countProduct, products, success: true })
-}
 
 
 export { addProduct, deleteProduct, getProduct, getProducts, updateProduct };
 
+
+// const countProduct = await mongooseQuery.clone().countDocuments();
+
+
+// let products = await mongooseQuery.exec()

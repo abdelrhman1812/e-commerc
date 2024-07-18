@@ -6,7 +6,7 @@ const validate = (schema) => {
             next()
         } else {
             let errorMsg = error.details.map((err) => err?.message)
-            res.json({ error: errorMsg })
+            res.json({ error: errorMsg[0] })
         }
     }
 

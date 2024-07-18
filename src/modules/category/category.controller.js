@@ -2,6 +2,7 @@ import fs from 'fs';
 import slugify from "slugify";
 import CategoryModel from "../../../database/models/category.model.js";
 import UserModel from "../../../database/models/user.model.js";
+import ApiFeatures from '../../utils/apiFeatures.js';
 import AppError from "../../utils/appError.js";
 import { messages } from "../../utils/messages.js";
 /* ==========  Add Category ==========  */
@@ -39,12 +40,20 @@ const addCategory = async (req, res, next) => {
 
 const getCategories = async (req, res, next) => {
 
-    const categories = await CategoryModel.find()
+    let apiFeature = new ApiFeatures(CategoryModel.find(), req.query)
+        .filter()
+        .sort()
+        .fields()
+        .search()
+        .pagination();
 
-    return res.status(200).json({ message: messages.category.success, categories, success: true })
+    let count = await apiFeature.countDocuments();
+    let categories = await apiFeature.mongooseQuery;
+
+    res.status(200).json({ message: messages.category.success, count, categories, success: true });
+
 
 }
-
 /* ========== Get Category ========== */
 
 const getCategory = async (req, res, next) => {

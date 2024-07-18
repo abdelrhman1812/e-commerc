@@ -5,7 +5,7 @@ export const roles = {
 
 
 export const status = {
-    OFFLINE: "Ofline",
+    OFFLINE: "offline",
     ONLINE: "online"
 }
 

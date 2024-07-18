@@ -3,6 +3,7 @@ import brandRouter from "./Brand/brand.routes.js";
 import categoryRouter from "./category/category.routes.js";
 import productRouter from "./product/product.routes.js";
 import subCategoryRouter from "./subCategory/subCategory.routes.js";
+import usersRouter from "./users/users.routes.js";
 
 
 const bootstrap = (app) => {
@@ -12,6 +13,7 @@ const bootstrap = (app) => {
     app.use('/api/subcategories', subCategoryRouter);
     app.use('/api/brands', brandRouter);
     app.use('/api/products', productRouter);
+    app.use('/api/users', usersRouter);
 }
 
 export default bootstrap;
